@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      color: #1f2937;
+    }
+
+    .container-main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: #6b7280;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .form-panel, .preview-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-section {
+      margin-bottom: 30px;
+    }
+
+    .form-section h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #2563eb;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #dbeafe;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-add {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-add:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .item-entry {
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border-left: 4px solid #2563eb;
+      position: relative;
+      padding-right: 40px;
+    }
+
+    .btn-remove {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .btn-remove:hover {
+      background: #dc2626;
+    }
+
+    .item-entry .title {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .item-entry .meta {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .preview-panel {
+      position: sticky;
+      top: 40px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+
+    .portfolio-preview {
+      background: white;
+    }
+
+    .portfolio-header {
+      text-align: center;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 30px;
+    }
+
+    .portfolio-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-title {
+      font-size: 1.2rem;
+      color: #2563eb;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-contact {
+      font-size: 0.9rem;
+      color: #6b7280;
+      word-break: break-all;
+    }
+
+    .portfolio-section {
+      margin-bottom: 30px;
+    }
+
+    .portfolio-section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #dbeafe;
+    }
+
+    .portfolio-item {
+      margin-bottom: 20px;
+    }
+
+    .portfolio-item-title {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .portfolio-item-meta {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .portfolio-item-description {
+      color: #374151;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .portfolio-summary {
+      line-height: 1.7;
+      color: #374151;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid #e5e7eb;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background: white;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #eff6ff;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .preview-panel {
+        position: static;
+        max-height: none;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-main">
+    <div class="header">
+      <h1>Portfolio Generator</h1>
+      <p>Create your professional portfolio in minutes</p>
+    </div>
+
+    <div class="layout">
+      <!-- Form Panel -->
+      <div class="form-panel">
+        <div class="form-section">
+          <h3>Personal Information</h3>
+          
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="John Doe">
+          </div>
+
+          <div class="form-group">
+            <label>Professional Title</label>
+            <input type="text" id="title" placeholder="Full Stack Developer">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="john@example.com">
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+          </div>
+
+          <div class="form-group">
+            <label>Professional Summary</label>
+            <textarea id="summary" placeholder="Brief description of your professional background and expertise..."></textarea>
+          </div>
+        </div>
+
+        <!-- Experience Section -->
+        <div class="form-section">
+          <h3>Experience</h3>
+          
+          <div class="form-group">
+            <label>Company/Organization</label>
+            <input type="text" id="experienceCompany" placeholder="Acme Corp">
+          </div>
+
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" id="experienceTitle" placeholder="Senior Developer">
+          </div>
+
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" id="experienceDuration" placeholder="2021 - 2024">
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="experienceDescription" placeholder="Describe your responsibilities and achievements..."></textarea>
+          </div>
+
+          <button class="btn-add" onclick="addExperience()">+ Add Experience</button>
+          <div id="experienceList"></div>
+        </div>
+
+        <!-- Education Section -->
+        <div class="form-section">
+          <h3>Education</h3>
+          
+          <div class="form-group">
+            <label>School/University</label>
+            <input type="text" id="educationSchool" placeholder="University of Example">
+          </div>
+
+          <div class="form-group">
+            <label>Degree</label>
+            <input type="text" id="educationDegree" placeholder="Bachelor of Science in Computer Science">
+          </div>
+
+          <div class="form-group">
+            <label>Year</label>
+            <input type="text" id="educationYear" placeholder="2020">
+          </div>
+
+          <button class="btn-add" onclick="addEducation()">+ Add Education</button>
+          <div id="educationList"></div>
+        </div>
+
+        <!-- Skills Section -->
+        <div class="form-section">
+          <h3>Skills</h3>
+          
+          <div class="form-group">
+            <label>Skill Name</label>
+            <input type="text" id="skillName" placeholder="JavaScript">
+          </div>
+
+          <button class="btn-add" onclick="addSkill()">+ Add Skill</button>
+          <div id="skillsList"></div>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel">
+        <div id="portfolio" class="portfolio-preview">
+          <div class="empty-state">
+            <p>Start filling in your details to see your portfolio preview</p>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary" onclick="downloadPortfolio()">📥 Download HTML</button>
+          <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      personal: {},
+      experiences: [],
+      education: [],
+      skills: []
+    };
+
+    function addExperience() {
+      const company = document.getElementById('experienceCompany').value.trim();
+      const title = document.getElementById('experienceTitle').value.trim();
+      const duration = document.getElementById('experienceDuration').value.trim();
+      const description = document.getElementById('experienceDescription').value.trim();
+
+      if (!company || !title) {
+        alert('Please fill in company and job title');
+        return;
+      }
+
+      data.experiences.push({ company, title, duration, description });
+      document.getElementById('experienceCompany').value = '';
+      document.getElementById('experienceTitle').value = '';
+      document.getElementById('experienceDuration').value = '';
+      document.getElementById('experienceDescription').value = '';
+
+      renderExperienceList();
+      updatePreview();
+    }
+
+    function addEducation() {
+      const school = document.getElementById('educationSchool').value.trim();
+      const degree = document.getElementById('educationDegree').value.trim();
+      const year = document.getElementById('educationYear').value.trim();
+
+      if (!school || !degree) {
+        alert('Please fill in school and degree');
+        return;
+      }
+
+      data.education.push({ school, degree, year });
+      document.getElementById('educationSchool').value = '';
+      document.getElementById('educationDegree').value = '';
+      document.getElementById('educationYear').value = '';
+
+      renderEducationList();
+      updatePreview();
+    }
+
+    function addSkill() {
+      const skill = document.getElementById('skillName').value.trim();
+
+      if (!skill) {
+        alert('Please enter a skill');
+        return;
+      }
+
+      data.skills.push(skill);
+      document.getElementById('skillName').value = '';
+
+      renderSkillsList();
+      updatePreview();
+    }
+
+    function removeExperience(index) {
+      data.experiences.splice(index, 1);
+      renderExperienceList();
+      updatePreview();
+    }
+
+    function removeEducation(index) {
+      data.education.splice(index, 1);
+      renderEducationList();
+      updatePreview();
+    }
+
+    function removeSkill(index) {
+      data.skills.splice(index, 1);
+      renderSkillsList();
+      updatePreview();
+    }
+
+    function renderExperienceList() {
+      const list = document.getElementById('experienceList');
+      list.innerHTML = data.experiences.map((exp, i) => `
+        <div class="item-entry">
+          <div class="title">${exp.title} @ ${exp.company}</div>
+          <div class="meta">${exp.duration}</div>
+          <button class="btn-remove" onclick="removeExperience(${i})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function renderEducationList() {
+      const list = document.getElementById('educationList');
+      list.innerHTML = data.education.map((edu, i) => `
+        <div class="item-entry">
+          <div class="title">${edu.degree}</div>
+          <div class="meta">${edu.school} • ${edu.year}</div>
+          <button class="btn-remove" onclick="removeEducation(${i})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function renderSkillsList() {
+      const list = document.getElementById('skillsList');
+      list.innerHTML = data.skills.map((skill, i) => `
+        <div class="item-entry">
+          <div class="title">${skill}</div>
+          <button class="btn-remove" onclick="removeSkill(${i})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function updatePersonalData() {
+      data.personal = {
+        name: document.getElementById('fullName').value,
+        title: document.getElementById('title').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        summary: document.getElementById('summary').value
+      };
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const { personal, experiences, education, skills } = data;
+
+      if (!personal.name && !personal.title && experiences.length === 0 && education.length === 0 && skills.length === 0) {
+        document.getElementById('portfolio').innerHTML = `
+          <div class="empty-state">
+            <p>Start filling in your details to see your portfolio preview</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '<div class="portfolio-preview">';
+
+      if (personal.name || personal.title) {
+        html += `
+          <div class="portfolio-header">
+            <div class="portfolio-name">${personal.name || 'Your Name'}</div>
+            ${personal.title ? `<div class="portfolio-title">${personal.title}</div>` : ''}
+            ${personal.email || personal.phone ? `
+              <div class="portfolio-contact">
+                ${personal.email ? `${personal.email}` : ''}
+                ${personal.email && personal.phone ? ' • ' : ''}
+                ${personal.phone ? `${personal.phone}` : ''}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      if (personal.summary) {
+        html += `
+          <div class="portfolio-section">
+            <div class="portfolio-section-title">About</div>
+            <div class="portfolio-summary">${personal.summary}</div>
+          </div>
+        `;
+      }
+
+      if (experiences.length > 0) {
+        html += `<div class="portfolio-section"><div class="portfolio-section-title">Experience</div>`;
+        experiences.forEach(exp => {
+          html += `
+            <div class="portfolio-item">
+              <div class="portfolio-item-title">${exp.title}</div>
+              <div class="portfolio-item-meta">${exp.company}${exp.duration ? ` • ${exp.duration}` : ''}</div>
+              ${exp.description ? `<div class="portfolio-item-description">${exp.description}</div>` : ''}
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      if (education.length > 0) {
+        html += `<div class="portfolio-section"><div class="portfolio-section-title">Education</div>`;
+        education.forEach(edu => {
+          html += `
+            <div class="portfolio-item">
+              <div class="portfolio-item-title">${edu.degree}</div>
+              <div class="portfolio-item-meta">${edu.school}${edu.year ? ` • ${edu.year}` : ''}</div>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      if (skills.length > 0) {
+        html += `
+          <div class="portfolio-section">
+            <div class="portfolio-section-title">Skills</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              ${skills.map(skill => `<span style="background: #dbeafe; color: #2563eb; padding: 6px 12px; border-radius: 4px; font-size: 0.9rem;">${skill}</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      html += '</div>';
+      document.getElementById('portfolio').innerHTML = html;
+    }
+
+    function generatePortfolioHTML() {
+      const { personal, experiences, education, skills } = data;
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${personal.name || 'Portfolio'}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 60px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      padding-bottom: 40px;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 40px;
+    }
+
+    .name {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      color: #2563eb;
+      margin-bottom: 15px;
+    }
+
+    .contact {
+      font-size: 1rem;
+      color: #6b7280;
+      word-break: break-all;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #dbeafe;
+    }
+
+    .about {
+      line-height: 1.7;
+      color: #374151;
+      font-size: 1rem;
+    }
+
+    .item {
+      margin-bottom: 25px;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .item-meta {
+      font-size: 0.95rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .item-description {
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .skill-tag {
+      background: #dbeafe;
+      color: #2563eb;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .name {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="name">${personal.name || 'Your Name'}</div>
+      ${personal.title ? `<div class="title">${personal.title}</div>` : ''}
+      ${personal.email || personal.phone ? `
+        <div class="contact">
+          ${personal.email ? `${personal.email}` : ''}
+          ${personal.email && personal.phone ? ' • ' : ''}
+          ${personal.phone ? `${personal.phone}` : ''}
+        </div>
+      ` : ''}
+    </div>
+
+    ${personal.summary ? `
+      <div class="section">
+        <div class="section-title">About</div>
+        <div class="about">${personal.summary}</div>
+      </div>
+    ` : ''}
+
+    ${experiences.length > 0 ? `
+      <div class="section">
+        <div class="section-title">Experience</div>
+        ${experiences.map(exp => `
+          <div class="item">
+            <div class="item-title">${exp.title}</div>
+            <div class="item-meta">${exp.company}${exp.duration ? ` • ${exp.duration}` : ''}</div>
+            ${exp.description ? `<div class="item-description">${exp.description}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    ${education.length > 0 ? `
+      <div class="section">
+        <div class="section-title">Education</div>
+        ${education.map(edu => `
+          <div class="item">
+            <div class="item-title">${edu.degree}</div>
+            <div class="item-meta">${edu.school}${edu.year ? ` • ${edu.year}` : ''}</div>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    ${skills.length > 0 ? `
+      <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills-container">
+          ${skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+        </div>
+      </div>
+    ` : ''}
+  </div>
+</body>
+</html>`;
+    }
+
+    function downloadPortfolio() {
+      const html = generatePortfolioHTML();
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${data.personal.name || 'portfolio'}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function copyToClipboard() {
+      const html = generatePortfolioHTML();
+      navigator.clipboard.writeText(html).then(() => {
+        alert('Portfolio HTML copied to clipboard!');
+      }).catch(() => {
+        alert('Failed to copy to clipboard');
+      });
+    }
+
+    document.getElementById('fullName').addEventListener('input', updatePersonalData);
+    document.getElementById('title').addEventListener('input', updatePersonalData);
+    document.getElementById('email').addEventListener('input', updatePersonalData);
+    document.getElementById('phone').addEventListener('input', updatePersonalData);
+    document.getElementById('summary').addEventListener('input', updatePersonalData);
+
+    updatePreview();
+  </script>
+</body>
+</html>
